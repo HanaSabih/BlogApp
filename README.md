@@ -8,7 +8,6 @@
   - [🛠 Built With](#built-with)
     - [Tech Stack](#tech-stack)
     - [Key Features](#key-features)
-  - [🚀 Live Demo](#live-demo)
 - [💻 Getting Started](#getting-started)
   - [Setup](#setup)
   - [Prerequisites](#prerequisites)
@@ -27,7 +26,7 @@
 
 # 📖 [BlogApp] <a name="about-project"></a>
 
-> Describe your project in 1 or 2 sentences.
+
 
 **[BlogApp]** is an ongoing project which when finished will be a ruby on rails application which allows users to make posts, comments and leave likes, while saving all of this data to a database server.
 
@@ -59,11 +58,7 @@
 
 <!-- LIVE DEMO -->
 
-## 🚀 Live Demo <a name="live-demo"></a>
 
-[Live Demo not yet]()
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- GETTING STARTED -->
 
