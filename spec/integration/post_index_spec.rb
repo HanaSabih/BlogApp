@@ -57,7 +57,3 @@ RSpec.describe 'Post index view', type: :system do
     expect(page).to have_current_path(user_post_path(@tom, @post1))
   end
 end
-
-
-
-
