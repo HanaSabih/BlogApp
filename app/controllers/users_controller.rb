@@ -4,7 +4,13 @@ class UsersController < ApplicationController
   end
 
   def show
+    set_user
+  end
+
+  private
+
+  def set_user
     @user = User.find(params[:id])
-    @posts = @user.recent_posts
+    @showcurrentuser = current_user
   end
 end

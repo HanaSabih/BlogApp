@@ -1,17 +1,23 @@
-<!DOCTYPE html>
-<html>
-  <head></head>
-  <body>
-    <div class='container'>
-      <% @users.each do |user| %>
-        <div class='card'>
-          <img class='userpic' src= <%= user.photo %> >
-          <a href="<%= users_url(user.id) %>" class='leftcard'>
-            <h2 class='username'><%= user.name %></h2>
-            <p class='count'>Number of posts: <%= user.posts_counter >= 0 ? user.posts_counter : '0' %></p><br>
-          </a>
-        </div>
-      <% end %>
-    </div>
-  </body>
-</html>
+<%= render 'layouts/header' %>
+<section class="indent">
+    <% if @users.empty? %>
+        <h3>No users on record</h3>
+    <% else %>
+        <ul class="list">
+            <% @users.each do |user| %>
+                <li>
+                    <a class="link" href=<%= user_path(user) %>>
+                        <div class="user-info">
+                            <img class="user-img" src=<%= user.photo %>>
+                            <div class="bordered user">
+                                <span class="user-name"><%= user.name %></span>
+                                <span class="user-offset">Number of posts: <%= user.posts_counter %></span>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+            <% end %>
+        </ul>
+    <% end %>
+</section>
+    
