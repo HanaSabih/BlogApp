@@ -1,41 +1,48 @@
 require 'rails_helper'
 
-describe User, type: :model do
-  subject { User.create(name: 'Soap McTavish', photo: 'Soap_MacTavish.jpg', bio: 'Spec-Ops') }
-  let(:post) { Post.create(title: 'Track Al Asad', author: subject, text: 'Capture Al Asad from the TV station') }
+RSpec.describe User, type: :model do
+  context 'Validations' do
+    it 'checks if name is empty' do
+      user = User.new(photo: 'https://unsplash.com/photos/F_-0BxGuVvo', bio: 'Nice user', posts_counter: 0)
+      expect(user.valid?).to eq false
+    end
 
-  describe 'validations' do
-    it 'name should be present' do
-      subject.name = nil
-      expect(subject).to_not be_valid
+    it 'checks if posts_counter is an integer' do
+      user = User.new(name: 'John', photo: 'https://unsplash.com/photos/F_-0BxGuVvo', bio: 'Nice user',
+                      posts_counter: 1.5)
+      expect(user.valid?).to eq false
     end
-    it 'posts_counter should be greater than or equal to 0' do
-      subject.posts_counter = -1
-      expect(subject).to_not be_valid
-    end
-    it 'posts_counter should be an integer' do
-      subject.posts_counter = 1.5
-      expect(subject).to_not be_valid
+
+    it 'checks if posts_counter is greater or equal to zero' do
+      user = User.new(name: 'Tom', photo: 'https://unsplash.com/photos/F_-0BxGuVvo', bio: 'Nice user',
+                      posts_counter: -1)
+      expect(user.valid?).to eq false
     end
   end
-  describe '#initialize' do
-    it 'should be valid' do
-      expect(subject).to be_valid
+
+  context 'Associations' do
+    it 'has many posts' do
+      user = User.reflect_on_association('posts')
+      expect(user.macro).to eq(:has_many)
     end
-    it 'should have a name' do
-      expect(subject.name).to eq('Soap McTavish')
+
+    it 'has many comments' do
+      user = User.reflect_on_association('comments')
+      expect(user.macro).to eq(:has_many)
     end
-    it 'should have a photo' do
-      expect(subject.photo).to eq('Soap_MacTavish.jpg')
-    end
-    it 'should have a bio' do
-      expect(subject.bio).to eq('Spec-Ops')
+
+    it 'has many likes' do
+      user = User.reflect_on_association('likes')
+      expect(user.macro).to eq(:has_many)
     end
   end
-  describe '#recent_three' do
-    it 'should return up to three of the most recent posts' do
-      post.save
-      expect(subject.recent_three).to eq([post])
+
+  context 'Custom methods' do
+    it 'returns recent posts' do
+      user = User.create(name: 'Tom', photo: 'https://unsplash.com/photos/F_-0BxGuVvo', bio: 'developer',
+                         posts_counter: 0)
+      7.times { Post.create(author: user, title: 'Hello', text: 'This is my first post') }
+      expect(user.recent_posts).to eq user.posts.last(3)
     end
   end
 end

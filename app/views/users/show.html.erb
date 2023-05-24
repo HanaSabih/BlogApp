@@ -1,25 +1,20 @@
-<section class="indent">
-    <div class="user-info">
-        <img class="user-img" src=<%= @user.photo %>>
-        <div class="bordered user">
-            <span class="user-name"><%= @user.name %></span>
-            <span class="user-offset">Number of posts: <%= @user.posts_counter %></span>
-        </div>
-    </div>
-    <div class="bordered">
-        bio:<br><br>
-        <%= @user.bio %><br><br>
-    </div>
-    <% @user.first_three.each do |post| %>
-        <a class="link" href=<%= user_post_path(@user, post) %>>
-            <div class="bordered post-info">
-                Post <%= post.id %>:<%= post.title %><br><br>
-                <%= truncate(post.text, length: 50, separator: ' ') %><br>
-                <span class="offset-left">Comments: <%= post.comments_counter %>, Likes: <%= post.likes_counter %></span>
-            </div>
-        </a>
-    <% end %>
-    <button class="to-posts-btn">
-        <%= link_to 'See all posts', user_posts_path(@user), style: 'color: black; text-decoration: none;' %>
-    </button>
-</section>
+<h1>Single user</h1>
+
+<img src="<%= @user.photo %>" alt="User photo">
+<p><strong><%= @user.name %></strong> <span>Number of posts: <%= @user.posts_counter %> </span></p>
+
+<p>Bio</p>
+<p><%= @user.bio %></p>
+
+<ul>
+<% @user.recent_posts.each  do |post| %>
+  <li>
+    <p><%= link_to post.title, user_post_path(@user, post) %></p>
+    <p><%= truncate(post.text, length: 50) %></p>
+    <p>Comments <%= post.comments_counter %>, Likes <%= post.likes_counter %></p>
+  </li>
+<% end %>
+</ul>
+
+<%= link_to "See all posts", user_posts_path(@user) %>
+<%= link_to 'Log out', destroy_user_session_path, method: :delete %>

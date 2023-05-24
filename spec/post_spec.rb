@@ -1,67 +1,72 @@
 require 'rails_helper'
+RSpec.describe Post, type: :model do
+  before(:all) do
+    @user = User.create(name: 'Malik', photo: 'https://unsplash.com/photos/g1oT9KdjAdc', bio: 'Developer from SA.',
+                        posts_counter: 0)
+  end
 
-describe Post, type: :model do
-  let(:user) { User.create(name: 'Soap McTavish', photo: 'Soap_MacTavish.jpg', bio: 'Spec-Ops') }
-  subject { Post.create(author: user, title: 'Track Al Asad', text: 'Capture Al Asad from the TV station') }
-  let(:comment) { Comment.create(post: subject, author: user, text: 'Assault begins at 1100 hrs') }
+  context 'validation' do
+    it 'checks title presence' do
+      post = Post.new(author: @user, text: 'This is my first post', likes_counter: 0,
+                      comments_counter: 0)
+      expect(post.valid?).to eq false
+    end
+    it 'check title length' do
+      test_title = 'A' * 260
+      post = Post.new(author: @user, title: test_title, text: 'This is my first post', likes_counter: 0,
+                      comments_counter: 0)
+      expect(post.valid?).to eq false
+    end
+    it 'checks if likes_counter is an integer' do
+      post = Post.new(author: @user, title: 'Post communication', text: 'This is my first post', likes_counter: 1.7,
+                      comments_counter: 0)
+      expect(post.valid?).to eq false
+    end
 
-  describe 'Validations' do
-    it 'title should be present' do
-      subject.title = nil
-      expect(subject).to_not be_valid
+    it 'checks if comments_counter is an integer' do
+      post = Post.new(author: @user, title: 'Post communication', text: 'This is my first post', likes_counter: 0,
+                      comments_counter: 1.8)
+      expect(post.valid?).to eq false
     end
-    it 'title should be less than or equal to 250 characters' do
-      subject.title = 'a' * 251
-      expect(subject).to_not be_valid
+    it 'checks if likes_counter is greater or equal to zero' do
+      post = Post.new(author: @user, title: 'Post communication', text: 'This is my first post', likes_counter: -1,
+                      comments_counter: 0)
+      expect(post.valid?).to eq false
     end
-    it 'comments_counter should be greater than or equal to 0' do
-      subject.comments_counter = -1
-      expect(subject).to_not be_valid
-    end
-    it 'comments_counter should be an integer' do
-      subject.comments_counter = 1.5
-      expect(subject).to_not be_valid
-    end
-    it 'likes_counter should be greater than or equal to 0' do
-      subject.likes_counter = -1
-      expect(subject).to_not be_valid
-    end
-    it 'likes_counter should be an integer' do
-      subject.likes_counter = 1.5
-      expect(subject).to_not be_valid
+    it 'checks if comments_counter is greater or equal to zero' do
+      post = Post.new(author: @user, title: 'Post communication', text: 'This is my first post', likes_counter: 0,
+                      comments_counter: -1)
+      expect(post.valid?).to eq false
     end
   end
-  describe '#initialize' do
-    it 'should be valid' do
-      expect(subject).to be_valid
-    end
-    it 'should have a title' do
-      expect(subject.title).to eq('Track Al Asad')
-    end
-    it 'should have a text' do
-      expect(subject.text).to eq('Capture Al Asad from the TV station')
-    end
-    it 'should have an author' do
-      expect(subject.author).to eq(user)
-    end
-    it 'should have a comments_counter' do
-      expect(subject.comments_counter).to eq(0)
-    end
-    it 'should have a likes_counter' do
-      expect(subject.likes_counter).to eq(0)
-    end
-  end
-  describe '#update_users_counter' do
-    before { subject.save }
 
-    it 'should update the author posts_counter' do
-      expect(user.posts_counter).to eq(1)
+  context 'Associations' do
+    it 'belongs to author' do
+      post = Post.reflect_on_association('author')
+      expect(post.macro).to eq(:belongs_to)
+    end
+
+    it 'has many comments' do
+      post = Post.reflect_on_association('comments')
+      expect(post.macro).to eq(:has_many)
+    end
+    it 'has many likes' do
+      post = Post.reflect_on_association('likes')
+      expect(post.macro).to eq(:has_many)
     end
   end
-  describe '#recent_five' do
-    it 'should return up to 5 of the most recent comments' do
-      comment.save
-      expect(subject.recent_five).to eq([comment])
+
+  context 'custom methods' do
+    it 'returns recents comments' do
+      test_post = Post.create(author: @user, title: 'my post', text: 'this is my test post', likes_counter: 0,
+                              comments_counter: 0)
+      10.times { Comment.create(post: test_post, author: @user, text: 'Hi Tom!') }
+      expect(test_post.return_recent_comments).to match_array(test_post.comments.last(5))
+    end
+    it 'updates posts_counter' do
+      Post.create(author: @user, title: 'my Post', text: 'This is my test post', likes_counter: 0,
+                  comments_counter: 0)
+      expect(@user.posts_counter).to eq 2
     end
   end
 end

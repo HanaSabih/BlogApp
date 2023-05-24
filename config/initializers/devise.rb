@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # Assuming you have not yet modified this file, each configuration option below
 # is set to its default value. Note that some are commented out while others
 # are not: uncommented lines are intended to protect your configuration from
@@ -14,7 +12,7 @@ Devise.setup do |config|
   # confirmation, reset password and unlock tokens in the database.
   # Devise will use the `secret_key_base` as its `secret_key`
   # by default. You can change it below and use your own secret key.
-  # config.secret_key = '78bc47e7b194f654ca866550307691aecec5028020d74e8472d7d28def8f991b4d78b11f6d9c7c4230eaebc85fc375fabfc75e29a54aaae514b12beaabb320c7'
+  # config.secret_key = '33cafa0fa9aebe186a41353c0f24735ca0f0625828ba8a03ec9ef6cb3ba0d30d402f6af974ad54e61764a449987dd7ba98fb15f8c730db0df7b53a5b3ee0b67d'
 
   # ==> Controller configuration
   # Configure the parent class to the devise controllers.
@@ -126,7 +124,7 @@ Devise.setup do |config|
   config.stretches = Rails.env.test? ? 1 : 12
 
   # Set up a pepper to generate the hashed password.
-  # config.pepper = '38d2fb6a8bca9fde9f8fa047c189bcf3a520e99f1f45fd0744fa5a74d08bb1402b070744b11813d51161b59c60186eff9018c23c91719e9575dabfa5aefc008b'
+  # config.pepper = 'decd8820491a174457aeaa1c3e3989e325dad330e2dcc5d93bc07394ecf5edbe5bf39a9fcb44989226dc8b46b76d20eb68ea2c28bbf11ee968d00539aad1b84b'
 
   # Send a notification to the original email when the user's email is changed.
   # config.send_email_changed_notification = false
@@ -143,7 +141,7 @@ Devise.setup do |config|
   # without confirming their account.
   # Default is 0.days, meaning the user cannot access the website without
   # confirming their account.
-  config.allow_unconfirmed_access_for = 1.days
+  # config.allow_unconfirmed_access_for = 2.days
 
   # A period that the user is allowed to confirm their account before their
   # token becomes invalid. For example, if set to 3.days, the user can confirm
@@ -224,7 +222,7 @@ Devise.setup do |config|
   # Time interval you can reset your password with a reset password key.
   # Don't put a too small interval or your users won't have the time to
   # change their passwords.
-  # config.reset_password_within = 6.hours
+  config.reset_password_within = 6.hours
 
   # When set to false, does not sign a user in automatically after their password is
   # reset. Defaults to true, so a user is signed in automatically after a reset.

@@ -1,23 +1,29 @@
 require 'rails_helper'
 
-describe Like, type: :model do
-  let(:user) { User.create(name: 'Soap McTavish', photo: 'Soap_MacTavish.jpg', bio: 'Spec-Ops') }
-  let(:post) { Post.create(author: user, title: 'Track Al Asad', text: 'Capture Al Asad from the TV station') }
-  subject { Like.create(post:, author: user) }
+RSpec.describe Like, type: :model do
+  before(:all) do
+    @user = User.create(name: 'Tom', photo: 'https://unsplash.com/photos/F_-0BxGuVvo', bio: 'Teacher from Mexico.',
+                        posts_counter: 0)
+    @post = Post.create(author: @user, title: 'Post communication', text: 'This is my first post', likes_counter: 0,
+                        comments_counter: 0)
+  end
 
-  describe '#initialize' do
-    it 'should be associated with a post' do
-      expect(subject.post).to eq(post)
+  context 'Associations' do
+    it 'belongs to an author' do
+      like = Like.reflect_on_association('author')
+      expect(like.macro).to eq(:belongs_to)
     end
-    it 'should be associated with an author' do
-      expect(subject.author).to eq(user)
+
+    it 'belongs to a post' do
+      like = Like.reflect_on_association('post')
+      expect(like.macro).to eq(:belongs_to)
     end
   end
-  describe '#update_posts_counter' do
-    before { subject.save }
 
-    it 'should update the post likes_counter' do
-      expect(post.likes_counter).to eq(1)
+  context 'Custom methods' do
+    it 'updates likes counter of the post' do
+      Like.create(author: @user, post: @post)
+      expect(@post.likes_counter).to eq 1
     end
   end
 end
