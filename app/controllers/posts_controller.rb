@@ -1,14 +1,7 @@
 class PostsController < ApplicationController
   def index
     @user = User.find(params[:user_id])
-    @posts = Post.where(author_id: @user.id)
-  end
-
-  def show
-    @post = Post.find(params[:id])
-    @author = User.find(params[:user_id])
-    @comments = Comment.where(post_id: params[:id])
-    @comment = @post.comments.new
+    @posts = @user.posts.includes(:comments).page(params[:page]).per(5)
   end
 
   def new
@@ -16,14 +9,27 @@ class PostsController < ApplicationController
   end
 
   def create
-    @post = Post.new(params.require(:post).permit(:title, :text))
-    @post.author = current_user
+    @post = current_user.posts.new(post_params)
     if @post.save
       flash[:success] = 'Post created successfully'
-      redirect_to user_post_path(@post.author, @post)
+      redirect_to user_posts_path(current_user, @post)
     else
-      flash.now[:error] = 'Something went wrong'
-      render :new, status: 422
+      flash.now[:error] = 'Error creating post'
+      render :new
     end
+  end
+
+  def show
+    set_post
+  end
+
+  private
+
+  def post_params
+    params.require(:post).permit(:title, :text)
+  end
+
+  def set_post
+    @post = Post.find(params[:id])
   end
 end
