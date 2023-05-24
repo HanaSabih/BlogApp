@@ -1,25 +1,28 @@
 require 'rails_helper'
+RSpec.describe Comment, type: :model do
+  before(:all) do
+    @user = User.create(name: 'Malik', photo: 'https://unsplash.com/photos/g1oT9KdjAdc', bio: 'Developer from SA.',
+                        posts_counter: 0)
+    @post = Post.create(author: @user, title: 'Post communication', text: 'This is my first post', likes_counter: 0,
+                        comments_counter: 0)
+  end
 
-describe Comment, type: :model do
-  let(:user) { User.create(name: 'Soap McTavish', photo: 'Soap_MacTavish.jpg', bio: 'Spec-Ops') }
-  let(:post) { Post.create(author: user, title: 'Track Al Asad', text: 'Capture Al Asad from the TV station') }
-  subject { Comment.create(post:, author: user, text: 'Assault begins at 1100 hrs') }
+  context 'Associations' do
+    it 'belongs to author' do
+      comment = Comment.reflect_on_association('author')
+      expect(comment.macro).to eq(:belongs_to)
+    end
 
-  describe '#initialize' do
-    it 'should be associated with a post' do
-      expect(subject.post).to eq(post)
-    end
-    it 'should be associated with an author' do
-      expect(subject.author).to eq(user)
-    end
-    it 'should have the text' do
-      expect(subject.text).to eq('Assault begins at 1100 hrs')
+    it 'belongs to a post' do
+      comment = Comment.reflect_on_association('post')
+      expect(comment.macro).to eq(:belongs_to)
     end
   end
-  describe '#update_posts_counter' do
-    before { subject.save }
-    it 'should update the post comments_counter' do
-      expect(post.comments_counter).to eq(1)
+
+  context 'Methods' do
+    it 'updates likes counter of the post' do
+      Comment.create(author: @user, post: @post, text: 'I like this post')
+      expect(@post.comments_counter).to eq 1
     end
   end
 end
