@@ -5,20 +5,20 @@ class ApiController < ApplicationController
 
   before_action :set_default_format
 
-   private
+  private
 
-   def set_default_format
-     request.format = :json
+  def set_default_format
+    request.format = :json
   end
 
   def authenticate_token!
     payload = JsonWebToken.decode(auth_token)
-     @current_user = User.find(payload['sub'])
-   rescue JWT::VerificationError
-     render json: { errors: ['Invalid auth token'] }, status: :unauthorized
-   end
+    @current_user = User.find(payload['sub'])
+  rescue JWT::VerificationError
+    render json: { errors: ['Invalid auth token'] }, status: :unauthorized
+  end
 
   def auth_token
-     @auth_token ||= request.headers.fetch('Authorization', '').split.last
-   end
- end
+    @auth_token ||= request.headers.fetch('Authorization', '').split.last
+  end
+end
